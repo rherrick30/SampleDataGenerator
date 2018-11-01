@@ -7,7 +7,22 @@ import java.util.Calendar
 
 object mainEntry{
 
+  val DUMP_FOLDER : String = "/users/rob_herrick/development/SparkDump/"
+
   def main(args : Array[String]) = {
+    generateLoans()
+  }
+
+  private def generateLoans() = {
+    val rand = new Random()
+    println(s"starting at ${Calendar.getInstance.getTime}")
+    val noLoans = 5000000
+    println(s"generating $noLoans loans")
+    generateLoanData(noLoans, new SimpleDate(2018,7,22),Option("5MillionLoans"))
+    println(s"ending at ${Calendar.getInstance.getTime}")
+  }
+
+  private def generateLeases(): Unit ={
     val rand = new Random()
     println(s"starting at ${Calendar.getInstance.getTime}")
     val noLeases = 10000 + rand.nextInt(1000)
@@ -16,7 +31,25 @@ object mainEntry{
     println(s"ending at ${Calendar.getInstance.getTime}")
   }
 
+  private def generateLoanData(numberOfLoans : Int, asOfDate: SimpleDate, fileName : Option[String])={
+    try {
+      val loanFile = new File( DUMP_FOLDER + fileName.getOrElse("loans.txt"))
+      val bw = new BufferedWriter(new FileWriter(loanFile))
+      bw.write(AutoLoanGenerator.fileHeader.replaceAll("\\,","|"))
+      bw.newLine()
+      (1 to numberOfLoans).foreach( id => {
+        val newLoan = AutoLoanGenerator.get(id, asOfDate)
+        //println(newLease.mkString("|"))
+        bw.write(newLoan.mkString("|"))
+        bw.newLine()
+      })
+      bw.close()
+    }
+    catch {
+      case e: java.io.IOException => println(s"IOException $e")
+    }
 
+  }
 
   private def generateEquipmentLeaseData(numberOfLeases : Int, asOfDate: SimpleDate)={
     try {

@@ -7,18 +7,31 @@ import java.util.Calendar
 
 object mainEntry{
 
-  val DUMP_FOLDER : String = "/users/rob_herrick/development/SparkDump/"
+  val DUMP_FOLDER : String = "/users/robertherrick/development/SparkDump/"
 
   def main(args : Array[String]) = {
-    generateLoans()
+    generateUSLoans()
+  }
+
+  private def ageASetOfLoans(): Unit ={
+
+  }
+
+  private def generateUSLoans() ={
+    val rand = new Random()
+    println(s"starting at ${Calendar.getInstance.getTime}")
+    val noLoans = 10000
+    println(s"generating $noLoans loans")
+    generateLoanData(USAutoLoanGenerator, noLoans, new SimpleDate(2018,7,22),Option("USAutoLoan10k.csv"))
+    println(s"ending at ${Calendar.getInstance.getTime}")
   }
 
   private def generateLoans() = {
     val rand = new Random()
     println(s"starting at ${Calendar.getInstance.getTime}")
-    val noLoans = 5000000
+    val noLoans = 50000
     println(s"generating $noLoans loans")
-    generateLoanData(noLoans, new SimpleDate(2018,7,22),Option("5MillionLoans"))
+    generateLoanData(AutoLoanGenerator, noLoans, new SimpleDate(2018,7,22),Option("5MillionLoans.csv"))
     println(s"ending at ${Calendar.getInstance.getTime}")
   }
 
@@ -27,20 +40,20 @@ object mainEntry{
     println(s"starting at ${Calendar.getInstance.getTime}")
     val noLeases = 10000 + rand.nextInt(1000)
     println(s"generating $noLeases leases")
-    generateEquipmentLeaseData(noLeases, new SimpleDate(2018,7,22))
+    generateEquipmentLeaseData(noLeases, new SimpleDate(2018,7,22), Option("10KLeases.csv"))
     println(s"ending at ${Calendar.getInstance.getTime}")
   }
 
-  private def generateLoanData(numberOfLoans : Int, asOfDate: SimpleDate, fileName : Option[String])={
+  private def generateLoanData(generator: LoanDataGenerator,  numberOfLoans : Int, asOfDate: SimpleDate, fileName : Option[String])={
     try {
-      val loanFile = new File( DUMP_FOLDER + fileName.getOrElse("loans.txt"))
+      val loanFile = new File( DUMP_FOLDER + fileName.getOrElse("loans.csv"))
       val bw = new BufferedWriter(new FileWriter(loanFile))
-      bw.write(AutoLoanGenerator.fileHeader.replaceAll("\\,","|"))
+      bw.write(generator.fileHeader.replaceAll("\\,","|"))
       bw.newLine()
       (1 to numberOfLoans).foreach( id => {
-        val newLoan = AutoLoanGenerator.get(id, asOfDate)
+        val newLoan = generator.get(id, asOfDate)
         //println(newLease.mkString("|"))
-        bw.write(newLoan.mkString("|"))
+        bw.write(newLoan.toString())
         bw.newLine()
       })
       bw.close()
@@ -51,10 +64,10 @@ object mainEntry{
 
   }
 
-  private def generateEquipmentLeaseData(numberOfLeases : Int, asOfDate: SimpleDate)={
+  private def generateEquipmentLeaseData(numberOfLeases : Int, asOfDate: SimpleDate, fileName : Option[String])={
     try {
-      val leaseFile = new File("/users/rob_herrick/development/SparkDump/leases.txt")
-      val paymentFile = new File("/users/rob_herrick/development/SparkDump/payments.txt")
+      val leaseFile = new File(DUMP_FOLDER + fileName.getOrElse("leases.csv"))
+      val paymentFile = new File(DUMP_FOLDER + fileName.getOrElse("leases.txt") + ".pmtSched.csv")
       val bw = new BufferedWriter(new FileWriter(leaseFile))
       val bwPayments = new BufferedWriter(new FileWriter(paymentFile))
       bw.write(EquipmentLeaseGenerator.fileHeader.replaceAll("\\,","|"))

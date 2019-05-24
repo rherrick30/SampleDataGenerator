@@ -6,7 +6,7 @@ object EquipmentLeaseGenerator extends DataGeneratorBase {
   val optResidualDelay = new SimpleChoiceField(List((List("0"), 50),(List("1"), 30),(List("2"), 20),(List("3"), 10)))
   val optPaymentSchedules = new SimpleChoiceField(List((List("1"),50),(List("2"),30),(List("3"),20)))
 
-  def fileHeader = "id,leaseNumber,locale,country,currencyCode,industry,fundingBranch,equipmentValue,leaseDate," +
+  def fileHeader = "id,leaseNumber,poolName,locale,country,currencyCode,industry,fundingBranch,equipmentValue,leaseDate," +
     "leaseTerm,residualDelay,residualAmount,residualDate," +
     "amountFinanced,insuranceCarrier,creditRating,serviceFeeRate,penaltyRate,paymentSchedules,purchaseOption," +
     "nextPaymentDueDate,nextPaymentAmountDue,paymentsBehind,paymentAhead,seasoning," +
@@ -22,6 +22,7 @@ object EquipmentLeaseGenerator extends DataGeneratorBase {
   def get(_id : Int, asOf: SimpleDate) : (List[String],Seq[(SimpleDate,Double)]) = {
 
     val leaseNumber = java.util.UUID.randomUUID().toString.replace("-","")
+    val poolName = if (rand.nextInt() < 10)  "pledged" else "unsold"
     val List(metroArea, country, currencyCode) = optLocale.next()
     val List(industry,fundingBranch) = optIndustry.next()
     val leaseDate = new SimpleDate(earliestLeaseDate.Year, earliestLeaseDate.Month, rand.nextInt(200))
@@ -69,7 +70,7 @@ object EquipmentLeaseGenerator extends DataGeneratorBase {
     def f(d: Double) :String = f"${d}%19.2f".trim
 
     (
-    List(_id.toString,leaseNumber,metroArea, country, currencyCode, industry,fundingBranch,f(equipmentValue),leaseDate.toString,
+    List(_id.toString,leaseNumber,poolName,metroArea, country, currencyCode, industry,fundingBranch,f(equipmentValue),leaseDate.toString,
       leaseTerm.toString,residualDelay.getOrElse("").toString, residualAmount.getOrElse("").toString, residualDate.getOrElse("").toString,
       f(amountFinanced),insuranceCarrier,creditRating,serviceFeeRate,penaltyRate,pmtSchedules.toString,purchaseOption,
       nextPaymentDueDate.toString(),nextPaymentAmountDue.toString,paymentsBehind.toString,paymentAhead.toString,seasoning.toString,

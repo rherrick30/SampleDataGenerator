@@ -1,13 +1,16 @@
 package rjh.datageneration.com
 
-object AutoLoanGenerator extends LoanDataGenerator {
+
+object USAutoLoanGenerator extends LoanDataGenerator {
 
   val earliestLoanDate : SimpleDate = new SimpleDate(2017,1,1)
   val optBalloonTerm = new SimpleChoiceField(List((List("0"), 50),(List("1"), 30),(List("2"), 20),(List("3"), 10)))
   val baseRate : Double = 0.04
 
+  // overrides
+  override val optLocale = new SimpleChoiceField(cityOptionsUSA)
 
-  def fileHeader = "id,loanNumber,poolName,locale,country,currencyCode,autoMSRP,loanDate," +
+  def fileHeader = "id,loanNumber,poolName,locale,region,currencyCode,autoMSRP,loanDate," +
     "loanTerm,balloonTerm,baloonAmount,balloonDate," +
     "amountFinanced,insuranceCarrier,creditRating,serviceFeeRate,penaltyRate," +
     "nextPaymentDueDate,nextPaymentAmountDue,paymentsBehind,paymentsAhead,seasoning," +
@@ -21,7 +24,7 @@ object AutoLoanGenerator extends LoanDataGenerator {
   def get(_id : Int, asOf: SimpleDate) : GeneratedLoan = {
 
     val loanNumber = java.util.UUID.randomUUID().toString.replace("-","")
-    val poolName = if(rand.nextInt()<10) "pledged" else ""
+    val poolName = if(rand.nextInt()<10) "pledged" else "unsold"
     val List(metroArea, country, currencyCode) = optLocale.next()
     val loanDate = new SimpleDate(earliestLoanDate.Year, earliestLoanDate.Month, rand.nextInt(200))
 
@@ -65,7 +68,7 @@ object AutoLoanGenerator extends LoanDataGenerator {
       balloonAmount, balloonDate,amountFinanced,insuranceCarrier,creditRating,serviceFeeRate.toFloat,penaltyRate,
       nextPaymentDueDate,paymentAmount,paymentsBehind,paymentAhead,seasoning,remainingPayments.length,balloonPrincipal,
       interestRate,currentPrincipalBalance,make,model)
-
   }
+
 
 }

@@ -7,13 +7,38 @@ import java.util.Calendar
 
 object mainEntry{
 
-  val DUMP_FOLDER : String = "/users/robertherrick/development/SparkDump/"
+  val DUMP_FOLDER : String = "/users/robertherrick/Development/sparkDump/"
 
   def main(args : Array[String]) = {
-    generateUSLoans()
+    val ager = new AgePerformanceLoanFile()
+    //generatePerformanceLoans(10122,new SimpleDate(2019,11,30),Some("PerformanceLoans20191130.csv"))
+    ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20191130.csv",DUMP_FOLDER + "PerformanceLoans20191231.csv")
+    ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20191231.csv",DUMP_FOLDER + "PerformanceLoans20200131.csv")
+    ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20200131.csv",DUMP_FOLDER + "PerformanceLoans20200229.csv")
+    ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20200229.csv",DUMP_FOLDER + "PerformanceLoans20190331.csv")
   }
 
   private def ageASetOfLoans(): Unit ={
+
+  }
+
+  private def generatePerformanceLoans(numberOfLoans : Int, asOfDate: SimpleDate, fileName : Option[String])={
+    try {
+      val loanFile = new File(DUMP_FOLDER + fileName.getOrElse("performanceLoans.csv"))
+      val bw = new BufferedWriter(new FileWriter(loanFile))
+      bw.write(PerformanceLoanGenerator.fileHeader)
+      bw.newLine()
+      (1 to numberOfLoans).foreach( id => {
+        val newLoan = PerformanceLoanGenerator.get(id, asOfDate)
+        //println(newLease.mkString("|"))
+        bw.write(newLoan.mkString(","))
+        bw.newLine()
+      })
+      bw.close()
+    }
+    catch {
+      case e: java.io.IOException => println(s"IOException $e")
+    }
 
   }
 
@@ -53,7 +78,7 @@ object mainEntry{
       (1 to numberOfLoans).foreach( id => {
         val newLoan = generator.get(id, asOfDate)
         //println(newLease.mkString("|"))
-        bw.write(newLoan.toString())
+        bw.write(newLoan.toString('|'))
         bw.newLine()
       })
       bw.close()

@@ -34,11 +34,11 @@ case class GeneratedLoan(
   def f(d: Double) :String = f"${d}%19.2f".trim
 
   override def toString(): String = {
-    s"""${id.toString},$loanNumber,$poolName,$metroArea,$region,$currencyCode,${f(autoMSRP)},${loanDate.toString},
-    ${loanTerm.toString},${balloonTerm.getOrElse("").toString},${f(balloonAmount)},${balloonDate.getOrElse("").toString},
-    ${f(amountFinanced)},$insuranceCarrier,$creditRating,$serviceFeeRate,$penaltyRate,
-    ${nextPaymentDueDate.toString()},${nextPaymentAmountDue.toString},${paymentsBehind.toString},${paymentsAhead.toString},${seasoning.toString},
-    ${remainingTerm.toString},${balloonPrincipal.getOrElse("").toString},${interestRate.toString},${currentPrincipalBalance.toString},$make,$model"""
+    toString(',')
+  }
+
+  def toString(sep: Char) : String = {
+    s"""${id.toString}$sep$loanNumber$sep$poolName$sep$metroArea$sep$region$sep$currencyCode$sep${f(autoMSRP)}$sep${loanDate.toString}$sep${loanTerm.toString}$sep${balloonTerm.getOrElse("").toString}$sep${f(balloonAmount)}$sep${balloonDate.getOrElse("").toString}$sep${f(amountFinanced)}$sep$insuranceCarrier$sep$creditRating$sep$serviceFeeRate$sep$penaltyRate$sep${nextPaymentDueDate.toString()}$sep${nextPaymentAmountDue.toString}$sep${paymentsBehind.toString}$sep${paymentsAhead.toString}$sep${seasoning.toString}$sep${remainingTerm.toString}$sep${balloonPrincipal.getOrElse("").toString}$sep${interestRate.toString}$sep${currentPrincipalBalance.toString}$sep$make$sep$model"""
   }
 
   def age(g: GeneratedLoan) : GeneratedLoan ={

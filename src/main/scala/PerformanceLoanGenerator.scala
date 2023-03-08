@@ -4,10 +4,10 @@ import rjh.datageneration.com.USAutoLoanGenerator.{currencyConversions, earliest
 
 object PerformanceLoanGenerator {
 
-  val earliestLoanDate : SimpleDate = new SimpleDate(2017,1,1)
+  val earliestLoanDate : SimpleDate = new SimpleDate(2022,1,1)
   val baseRate : Double = 0.04
 
-  def fileHeader = "id,loanNumber,poolName,amountFinanced,currentBalance,defaultAmount,prepayment,loss,recovery,scheduledInterest,scheduledPrincipal,monthsDelinquent,apr"
+  def fileHeader = "id,loanNumber,poolName,amountFinanced,currentBalance,defaultAmount,prepayment,loss,recovery,scheduledInterest,scheduledPrincipal,monthsDelinquent,apr,paymentDay"
 
   def get(_id : Int, asOf: SimpleDate) : List[String] = {
 
@@ -49,12 +49,13 @@ object PerformanceLoanGenerator {
     }
 
     val apr = Math.round((0.02d + (rand.nextFloat() / 10.0d)) * 100000.0d).toDouble / 100000.0d
+    val paymentDay = rand.nextInt(28)
 
     def f(d: Double) :String = f"${d}%19.2f".trim
     List[String](
       starterLoan.id.toString(),starterLoan.loanNumber,poolName,f(starterLoan.amountFinanced),f(currentBalance)
       ,f(defaultAmount),f(prepayment),f(loss),f(recovery),f(scheduledInterest),f(scheduledPrincipal)
-      ,starterLoan.paymentsBehind.toString,apr.toString
+      ,starterLoan.paymentsBehind.toString,apr.toString,paymentDay.toString
     )
   }
 }

@@ -11,11 +11,17 @@ object mainEntry{
 
   def main(args : Array[String]) = {
     val ager = new AgePerformanceLoanFile()
-    //generatePerformanceLoans(10122,new SimpleDate(2019,11,30),Some("PerformanceLoans20191130.csv"))
+    generatePerformanceLoans(10122,new SimpleDate(2020,9,30),Some("PerformanceLoans.csv"))
+
+    ager.CreateDayAgedFiles(DUMP_FOLDER + "PerformanceLoans.csv",new SimpleDate(2020,9,30),5)
+
+    /*
     ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20191130.csv",DUMP_FOLDER + "PerformanceLoans20191231.csv")
     ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20191231.csv",DUMP_FOLDER + "PerformanceLoans20200131.csv")
     ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20200131.csv",DUMP_FOLDER + "PerformanceLoans20200229.csv")
     ager.AgeOneMonth(DUMP_FOLDER + "PerformanceLoans20200229.csv",DUMP_FOLDER + "PerformanceLoans20190331.csv")
+    */
+
   }
 
   private def ageASetOfLoans(): Unit ={

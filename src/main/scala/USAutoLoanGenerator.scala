@@ -3,7 +3,7 @@ package rjh.datageneration.com
 
 object USAutoLoanGenerator extends LoanDataGenerator {
 
-  val earliestLoanDate : SimpleDate = new SimpleDate(2017,1,1)
+  val earliestLoanDate : SimpleDate = new SimpleDate(2022,1,1)
   val optBalloonTerm = new SimpleChoiceField(List((List("0"), 50),(List("1"), 30),(List("2"), 20),(List("3"), 10)))
   val baseRate : Double = 0.04
 
